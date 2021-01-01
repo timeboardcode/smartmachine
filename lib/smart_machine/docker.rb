@@ -13,37 +13,13 @@ module SmartMachine
 		#   none
 		def install
 			puts "-----> Installing Docker"
-
-			ssh = SmartMachine::SSH.new
-
-			print "-----> Installing Docker Engine ... "
-			commands = [
-				"sudo apt-get -y update",
-				"sudo apt-get -y install apt-transport-https ca-certificates curl software-properties-common",
-				"curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
-				"sudo apt-key fingerprint 0EBFCD88",
-				"sudo add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\"",
-				"sudo apt-get -y update",
-				"sudo apt-get -y install docker-ce",
-				"sudo usermod -aG docker $USER",
-				"docker run --rm hello-world",
-				"docker rmi hello-world"
-			]
-			ssh.run commands
-			puts "done"
-
-			print "-----> Installing Docker Compose ... "
-			commands = [
-				"sudo curl -L --fail https://github.com/docker/compose/releases/download/1.24.0/run.sh -o /usr/local/bin/docker-compose",
-				"sudo chmod +x /usr/local/bin/docker-compose",
-				"docker-compose --version",
-				"sudo curl -L https://raw.githubusercontent.com/docker/compose/1.24.0/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose"
-			]
-			ssh.run commands
-			puts "done"
-
-			self.add_ufw_rules
-
+			if machine.has_linuxos?
+				install_on_linux(distro_name: "debian")
+			elsif machine.has_macos?
+				install_on_mac
+			else
+				puts "Installation of docker is currently supported on Debian or MacOS. Please install docker by other means on this platform to continue."
+			end
 			puts "-----> Docker Installation Complete"
 		end
 
@@ -56,30 +32,42 @@ module SmartMachine
 		#   none
 		def uninstall
 			puts "-----> Uninstalling Docker"
-
-			ssh = SmartMachine::SSH.new
-
-			print "-----> Uninstalling Docker Compose ... "
-			commands = ["sudo rm /usr/local/bin/docker-compose"]
-			ssh.run commands
-			puts "done"
-
-			print "-----> Uninstalling Docker Engine ... "
-			commands = ["sudo apt-get purge docker-ce", "sudo rm -rf /var/lib/docker"]
-			ssh.run commands
-			puts "done"
-
-			self.remove_ufw_rules
-
-			puts "-----> You must delete any edited configuration files manually."
-
+			if machine.has_linuxos?
+				uninstall_on_linux(distro_name: "debian")
+			elsif machine.has_macos?
+				uninstall_on_mac
+			else
+				puts "Uninstallation of docker is currently supported on Debian or MacOS. Please uninstall docker by other means on this platform to continue."
+			end
 			puts "-----> Docker Uninstallation Complete"
 		end
 
-		def update
+		def self.running?
+			if system("docker info", [:out, :err] => File::NULL)
+				true
+			else
+				puts "Error: Docker daemon is not running. Have you installed docker? Please ensure docker daemon is running and try again."
+				false
+			end
 		end
 
-		def add_ufw_rules
+		private
+
+		def install_on_linux(distro_name: "debian", arch: "amd64")
+			commands = [
+				"sudo apt-get -y update",
+				"sudo apt-get -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
+				"curl -fsSL https://download.docker.com/linux/#{distro_name}/gpg | sudo apt-key add -",
+				"sudo apt-key fingerprint 0EBFCD88",
+				"sudo add-apt-repository \"deb [arch=#{arch}] https://download.docker.com/linux/#{distro_name} $(lsb_release -cs) stable\"",
+				"sudo apt-get -y update",
+				"sudo apt-get -y install docker-ce docker-ce-cli containerd.io",
+				"sudo usermod -aG docker $USER",
+				"docker run --rm hello-world",
+				"docker rmi hello-world"
+			]
+			machine.run(commands: commands)
+
 			puts '-----> Add the following rules to the end of the file /etc/ufw/after.rules and reload ufw using - sudo ufw reload'
 			puts '# BEGIN UFW AND DOCKER
 			*filter
@@ -112,7 +100,14 @@ module SmartMachine
 			# system("sudo ufw reload")
 		end
 
-		def remove_ufw_rules
+		def uninstall_on_linux(distro_name: "debian", arch: "amd64")
+			commands = [
+				"sudo apt-get purge docker-ce docker-ce-cli containerd.io",
+				"sudo rm -rf /var/lib/docker",
+				"sudo rm -rf /var/lib/containerd"
+			]
+			machine.run(commands: commands)
+
 			puts '-----> Remove the following rules at the end of the file /etc/ufw/after.rules and reload ufw using - sudo ufw reload'
 			puts '# BEGIN UFW AND DOCKER
 			*filter
@@ -130,15 +125,31 @@ module SmartMachine
 			# system("sudo ufw reload")
 		end
 
-		# Below methods are non ssh methods and should be executed on the server only.
+		def install_on_mac
+			commands = [
+				"/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
+				"brew install homebrew/cask/docker",
+				"brew install bash-completion",
+				"brew install docker-completion",
+				"open /Applications/Docker.app",
+				# The docker app asks for permission after opening gui. if that can be automated then the next two statements can be uncommented and automated. Until then can't execute automatically.
+				# "docker run --rm hello-world",
+				# "docker rmi hello-world"
+			]
+			machine.run(commands: commands)
+		end
 
-		def self.running?
-			if system("docker info", [:out, :err] => File::NULL)
-				true
-			else
-				puts "Error: Docker daemon is not running. Have you installed docker? Please ensure docker daemon is running and try again."
-				false
-			end
+		def uninstall_on_mac
+			commands = [
+				"brew uninstall docker-completion",
+				"brew uninstall bash-completion",
+				"brew uninstall --zap homebrew/cask/docker"
+			]
+			machine.run(commands: commands)
+		end
+
+		def machine
+			@machine = SmartMachine::Machine.new
 		end
 	end
 end

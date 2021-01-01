@@ -1,5 +1,6 @@
 require "ostruct"
 require "yaml"
+require "os"
 
 # The main SmartMachine driver
 module SmartMachine
@@ -14,10 +15,12 @@ end
 
 require 'smart_machine/version'
 
-SmartMachine.config.root_path = File.expand_path('../..', __FILE__)
-SmartMachine.config.user_home_path = File.expand_path('~')
-if File.exist?("#{SmartMachine.config.user_home_path}/.smartmachine/config/environment.rb")
-	require "#{SmartMachine.config.user_home_path}/.smartmachine/config/environment"
+SmartMachine.config.gem_dir = Gem::Specification.find_by_name("smartmachine").gem_dir
+SmartMachine.config.cache_dir = Gem::Specification.find_by_name("smartmachine").cache_dir
+# SmartMachine.config.user_home_path = File.expand_path('~')
+SmartMachine.config.machine_dir = Dir.pwd
+if File.exist?("#{SmartMachine.config.machine_dir}/config/environment.rb")
+	require "#{SmartMachine.config.machine_dir}/config/environment"
 end
 
 require 'smart_machine/base'

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 	s.summary     	= "Full-stack deployment framework for Rails."
 	s.description 	= "SmartMachine is a full-stack deployment framework for rails optimized for admin programmer happiness and peaceful administration. It encourages natural simplicity by favoring convention over configuration."
 
-	s.required_ruby_version     = ">= 2.5.0"
+	s.required_ruby_version     = ">= 2.7.0"
 	s.required_rubygems_version = ">= 1.8.11"
 
 	s.license     	= "MIT"
@@ -37,4 +37,6 @@ Gem::Specification.new do |s|
 	s.add_dependency "bcrypt", "~> 3.1", ">= 3.1.13"
 	s.add_dependency "activesupport", "~> 6.0"
 	s.add_dependency "whenever", '~> 1.0'
+	s.add_dependency "os", '~> 1.1', '>= 1.1.1'
+	s.add_dependency "bundler", '~> 2.1', '>= 2.1.4'
 end
