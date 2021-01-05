@@ -41,47 +41,17 @@ module SmartMachine
 			puts "New machine #{name} has been created."
 		end
 
-		def install(package_name:)
-			package_name = package_name&.to_sym
-			if packages[package_name].present?
-				package = packages[package_name].new
-				package.install
-			else
-				puts "Help: Package name not provided. Please provide package name to install."
-			end
+		def install
+      SmartMachine::Docker.new.install
+      SmartMachine::Engine.new.install
 		end
 
-		def uninstall(package_name:)
-			package_name = package_name&.to_sym
-			if packages[package_name].present?
-				package = packages[package_name].new
-				package.uninstall
-			else
-				puts "Help: Package name not provided. Please provide package name to uninstall."
-			end
+		def uninstall
+      SmartMachine::Engine.new.uninstall
+      SmartMachine::Docker.new.uninstall
 		end
 
-		def grids(*args)
-			args.flatten!
-
-			if args.delete("--local")
-				exec "smartmachine runner grids #{args.join(" ")}"
-			else
-				ssh = SmartMachine::SSH.new
-				ssh.run "smartmachine runner grids #{args.join(" ")}"
-			end
-		end
-
-		def apps(*args)
-			args.flatten!
-
-			if args.delete("--local")
-				exec "smartmachine runner apps #{args.join(" ")}"
-			else
-				ssh = SmartMachine::SSH.new
-				ssh.run "smartmachine runner apps #{args.join(" ")}"
-			end
-		end
+		private
 
 		def getting_started
 			# puts 'You may be prompted to make a menu selection when the Grub package is updated on Ubuntu. If prompted, select keep the local version currently installed.'
@@ -137,42 +107,6 @@ module SmartMachine
 			# Change action = %(action_mwl)s
 			# sudo fail2ban-client reload
 			# sudo fail2ban-client status
-		end
-
-		def run(commands:)
-			commands = Array(commands).flatten
-
-			if SmartMachine.config.machine_mode == :server
-				ssh = SmartMachine::SSH.new
-				ssh.run commands
-			else
-				system(commands.join(";"))
-			end
-		end
-
-		def has_linuxos?
-			OS.linux?
-		end
-
-		def has_macos?
-			OS.mac?
-		end
-
-		def in_machine_dir?
-			File.file?("./config/master.key")
-		end
-
-		private
-
-		def packages
-			{
-				docker: SmartMachine::Docker,
-				engine: SmartMachine::Engine,
-				buildpacker: SmartMachine::Buildpacker,
-				prereceiver: SmartMachine::Grids::Prereceiver,
-				scheduler: SmartMachine::Grids::Scheduler,
-				elasticsearch: SmartMachine::Grids::Elasticsearch
-			}
 		end
 	end
 end
