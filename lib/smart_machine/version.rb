@@ -6,6 +6,14 @@ module SmartMachine
     Gem::Version.new VERSION::STRING
   end
 
+  def self.version
+    self.gem_version
+  end
+
+  def self.ruby_version
+    "2.7.0"
+  end
+
   module VERSION
     MAJOR = 0
     MINOR = 8
