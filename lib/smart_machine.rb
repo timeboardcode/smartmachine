@@ -11,6 +11,10 @@ module SmartMachine
 	def self.credentials
 		@@credentials ||= OpenStruct.new(SmartMachine::Credentials.new.config)
 	end
+
+  def self.in_machine_dir?
+    File.file?("./config/master.key")
+  end
 end
 
 require 'smart_machine/version'
