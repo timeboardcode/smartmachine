@@ -1,7 +1,8 @@
 # => NOTE: Ensure that the specified top-level domains are pointing to this server ip address using DNS records.
 # => Be sure to restart your server when you modify this file.
 
-# Use this smartmachine as local or server. Use :local mode if you want to use this smartmachine on your local machine.
+# Use this smartmachine as local or server.
+# Change to :local mode if you want to use this smartmachine on your local machine.
 SmartMachine.config.machine_mode = :server
 
 # Top-level naked domain to be used for subdomains of apps.
