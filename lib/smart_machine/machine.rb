@@ -83,28 +83,6 @@ module SmartMachine
 			end
 		end
 
-		def ps(*args)
-			args.flatten!
-
-			if SmartMachine.config.machine_mode == :server
-				ssh = SmartMachine::SSH.new
-				ssh.run "docker ps #{args.join(' ')}"
-			else
-				exec "docker ps #{args.join(' ')}"
-			end
-		end
-
-		def logs(*args)
-			args.flatten!
-
-			if SmartMachine.config.machine_mode == :server
-				ssh = SmartMachine::SSH.new
-				ssh.run "docker logs #{args.join(' ')}"
-			else
-				exec "docker logs #{args.join(' ')}"
-			end
-		end
-
 		def getting_started
 			# puts 'You may be prompted to make a menu selection when the Grub package is updated on Ubuntu. If prompted, select keep the local version currently installed.'
 

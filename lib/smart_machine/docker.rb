@@ -51,6 +51,17 @@ module SmartMachine
 			end
 		end
 
+		def run(*args)
+			args.flatten!
+
+			if SmartMachine.config.machine_mode == :server
+				ssh = SmartMachine::SSH.new
+				ssh.run "docker #{args.join(' ')}"
+			else
+				exec "docker #{args.join(' ')}"
+			end
+		end
+
 		private
 
 		def install_on_linux(distro_name: "debian", arch: "amd64")
