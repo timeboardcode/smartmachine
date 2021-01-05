@@ -7,21 +7,15 @@ command = ARGV.shift
 machine = SmartMachine::Machine.new
 
 case command
+when "--version"
+	puts "SmartMachine #{SmartMachine.version}"
+	return
 when "new"
 	raise "Can't create a machine inside a machine. Please come out of the machine directory to create another machine." if machine.in_machine_dir?
 
 	name = ARGV.shift
 	machine.create(name)
 	return
-
-when "--version"
-	puts "SmartMachine #{SmartMachine.version}"
-	return
-
-when "runner"
-	exec "smartrunner #{ARGV.join(' ')}"
-	return
-
 end
 
 if machine.in_machine_dir?
