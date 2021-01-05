@@ -24,7 +24,8 @@ if machine.in_machine_dir?
 		credentials = SmartMachine::Credentials.new
 		credentials.edit
 	when "ssh"
-		machine.ssh
+    ssh = SmartMachine::SSH.new
+    ssh.login
 	when "install"
 		machine.install package_name: ARGV[0]
 	when "uninstall"

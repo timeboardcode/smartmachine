@@ -41,15 +41,6 @@ module SmartMachine
 			puts "New machine #{name} has been created."
 		end
 
-		def ssh
-			if SmartMachine.config.machine_mode == :server
-				ssh = SmartMachine::SSH.new
-				ssh.login
-			else
-				puts "Help: Cannot ssh into local machine. You can only use the ssh command when using smartmachine for a server."
-			end
-		end
-
 		def install(package_name:)
 			package_name = package_name&.to_sym
 			if packages[package_name].present?
