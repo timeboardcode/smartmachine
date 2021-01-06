@@ -56,6 +56,12 @@ module SmartMachine
       SmartMachine::Docker.new.uninstall
 		end
 
+    def reinstall(args)
+      if args.include? "engine"
+        SmartMachine::Engine.new.reinstall
+      end
+    end
+
 		private
 
 		def getting_started

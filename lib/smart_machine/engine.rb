@@ -67,6 +67,11 @@ module SmartMachine
 			end
 		end
 
+    def reinstall
+      uninstall
+      install
+    end
+
 		private
 
 		def smartengine_binary_template
