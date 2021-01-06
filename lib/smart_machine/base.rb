@@ -16,6 +16,10 @@ module SmartMachine
 			run_commands_by_machine_mode(commands: ["uname | grep -q 'Darwin'"])
 		end
 
+    def machine_has_engine_installed?
+      run_commands_by_machine_mode(commands: ["which smartengine | grep -q '/smartengine'"])
+    end
+
 		def run_commands_by_machine_mode(commands:)
 			commands = Array(commands).flatten
 

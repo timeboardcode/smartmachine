@@ -4,21 +4,45 @@ require "smart_machine"
 
 command = ARGV.shift
 
-machine = SmartMachine::Machine.new
+if ENV["INSIDE_ENGINE"] == "yes"
+  if SmartMachine.in_machine_dir?
+		case command
+    when "buildpackers"
+      buildpackers = SmartMachine::Buildpackers.new
+      buildpackers.run ARGV
+		when "grids"
+			grids = SmartMachine::Grids.new
+			grids.run ARGV
+		when "apps"
+			apps = SmartMachine::Apps.new
+			apps.run ARGV
+    when "sync"
+      sync = SmartMachine::Sync.new
+      sync.run ARGV
+    else
+      puts "Help: Specify a valid smartmachine command to execute inside the machine directory."
+		end
+  else
+    raise "Not is machine directory to run engine commands"
+  end
+  return
+end
 
 case command
 when "--version"
 	puts "SmartMachine #{SmartMachine.version}"
 	return
 when "new"
-	raise "Can't create a machine inside a machine. Please come out of the machine directory to create another machine." if machine.in_machine_dir?
+	raise "Can't create a machine inside a machine. Please come out of the machine directory to create another machine." if SmartMachine.in_machine_dir?
 
 	name = ARGV.shift
+
+  machine = SmartMachine::Machine.new
 	machine.create(name)
 	return
 end
 
-if machine.in_machine_dir?
+if SmartMachine.in_machine_dir?
 	case command
 	when "credentials:edit"
 		credentials = SmartMachine::Credentials.new
@@ -27,21 +51,21 @@ if machine.in_machine_dir?
     ssh = SmartMachine::SSH.new
     ssh.login
 	when "install"
-		machine.install package_name: ARGV[0]
+		machine = SmartMachine::Machine.new
+    machine.install
 	when "uninstall"
-		machine.uninstall package_name: ARGV[0]
+		machine = SmartMachine::Machine.new
+    machine.uninstall
 	when "docker"
     docker = SmartMachine::Docker.new
-    docker.run ARGV
-	when "grids"
-		machine.grids ARGV
-	when "apps"
-		machine.apps ARGV
-	when "sync"
-		sync = SmartMachine::Sync.new
-		sync.run
+    docker.run_commands_by_machine_mode(commands: "docker #{ARGV.join(' ')}")
 	else
-		puts "Help: Specify a valid smartmachine command to execute inside the machine directory."
+    engine = SmartMachine::Engine.new
+		if engine.machine_has_engine_installed?
+      engine.run_commands_by_machine_mode(commands: "smartengine #{command} #{ARGV.join(' ')}")
+    else
+      puts "Smartmachine engine has not been installed yet for this machine. Please run 'smartmachine install' before running other commands."
+    end
 	end
 else
 	puts "Help: Specify a valid smartmachine command to execute. Are you in the correct directory to run this command?"
