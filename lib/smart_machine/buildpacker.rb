@@ -5,6 +5,17 @@ module SmartMachine
 		def initialize
 		end
 
+    def run(*args)
+      args.flatten!
+
+      command = args.shift
+      pack_name = args.shift
+      valid_commands = ['install', 'uninstall']
+      raise "invalid command on buildpacker" unless valid_commands.include? command
+
+      public_send(command, *args)
+    end
+
 		def install
 			puts "-----> Installing Buildpacker"
 
