@@ -16,7 +16,7 @@ require 'smart_machine/engine'
 require 'smart_machine/buildpacker'
 require 'smart_machine/sync'
 
-require 'smart_machine/user'
+require 'smart_machine/users'
 
 require 'smart_machine/grids'
 require 'smart_machine/grids/elasticsearch'
