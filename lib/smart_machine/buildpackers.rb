@@ -5,40 +5,44 @@ module SmartMachine
 		def initialize
 		end
 
-    def run(*args)
-      args.flatten!
-
+    def run(args)
       command = args.shift
-      pack_name = args.shift
-      valid_commands = ['install', 'uninstall']
-      raise "invalid command on buildpacker" unless valid_commands.include? command
 
-      public_send(command, *args)
+      if command == "install"
+        install
+      elsif command == "uninstall"
+        uninstall
+      else
+        raise "invalid command on buildpackers"
+      end
     end
 
 		def install
-			puts "-----> Installing Buildpacker"
-
-			ssh = SmartMachine::SSH.new
-			commands = ["smartmachine runner buildpacker create"]
-			ssh.run commands
-
-			puts "-----> Buildpacker Installation Complete"
+			puts "-----> Installing Buildpackers"
+      create_images
+			puts "-----> Buildpackers Installation Complete"
 		end
 
 		def uninstall
-			puts "-----> Uninstalling Buildpacker"
-
-			ssh = SmartMachine::SSH.new
-			commands = ["smartmachine runner buildpacker destroy"]
-			ssh.run commands
-
-			puts "-----> Buildpacker Uninstallation Complete"
+			puts "-----> Uninstalling Buildpackers"
+      destroy_images
+			puts "-----> Buildpackers Uninstallation Complete"
 		end
 
-		def create
-			self.destroy
+		def pack
+			if File.exist? "bin/rails"
+				rails = SmartMachine::Apps::Rails.new
+				rails.pack
+			end
+		end
 
+		def buildpacker_image_name
+			"smartmachine/buildpackers/rails:#{SmartMachine.version}"
+		end
+
+    private
+
+		def create_images
 			unless system("docker image inspect #{buildpacker_image_name}", [:out, :err] => File::NULL)
 				print "-----> Creating image #{buildpacker_image_name} ... "
 				if system("docker image build -t #{buildpacker_image_name} \
@@ -51,19 +55,12 @@ module SmartMachine
 			end
 		end
 
-		def destroy
+		def destroy_images
 			if system("docker image inspect #{buildpacker_image_name}", [:out, :err] => File::NULL)
 				print "-----> Removing image #{buildpacker_image_name} ... "
 				if system("docker image rm #{buildpacker_image_name}", out: File::NULL)
 					puts "done"
 				end
-			end
-		end
-
-		def pack
-			if File.exist? "bin/rails"
-				rails = SmartMachine::Apps::Rails.new
-				rails.pack
 			end
 		end
 
@@ -104,9 +101,5 @@ module SmartMachine
 		# 		end
 		# 	end
 		# end
-
-		def buildpacker_image_name
-			"smartmachine/buildpackers/rails:#{SmartMachine.version}"
-		end
 	end
 end

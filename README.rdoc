@@ -56,9 +56,9 @@ If using SmartMachine on a server, perform the below steps before proceeding.
 
     $ smartmachine install engine
 
-5. Install buildpacker from the command prompt:
+5. Install buildpackers from the command prompt:
 
-    $ smartmachine install buildpacker
+    $ smartmachine buildpackers install
 
 == Choosing Grids of your Choice
 
