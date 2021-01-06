@@ -46,22 +46,6 @@ module SmartMachine
       securing_your_server
     end
 
-		def install
-      SmartMachine::Docker.new.install
-      SmartMachine::Engine.new.install
-		end
-
-		def uninstall
-      SmartMachine::Engine.new.uninstall
-      SmartMachine::Docker.new.uninstall
-		end
-
-    def reinstall(args)
-      if args.include? "engine"
-        SmartMachine::Engine.new.reinstall
-      end
-    end
-
 		private
 
 		def getting_started

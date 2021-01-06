@@ -50,18 +50,24 @@ if SmartMachine.in_machine_dir?
 	when "ssh"
     ssh = SmartMachine::SSH.new
     ssh.login
-	when "install"
-		machine = SmartMachine::Machine.new
-    machine.install
-	when "uninstall"
-		machine = SmartMachine::Machine.new
-    machine.uninstall
-  when "reinstall"
-    machine = SmartMachine::Machine.new
-    machine.reinstall ARGV
 	when "docker"
     docker = SmartMachine::Docker.new
-    docker.run_commands_by_machine_mode(commands: "docker #{ARGV.join(' ')}")
+    if ARGV[0] == "install"
+      docker.install
+    elsif ARGV[0] == "uninstall"
+      docker.uninstall
+    else
+      docker.run_commands_by_machine_mode(commands: "docker #{ARGV.join(' ')}")
+    end
+	when "engine"
+    engine = SmartMachine::Engine.new
+    if ARGV[0] == "install"
+      engine.install
+    elsif ARGV[0] == "uninstall"
+      engine.uninstall
+    elsif ARGV[0] == "reinstall"
+      engine.reinstall
+    end
 	else
     engine = SmartMachine::Engine.new
 		if engine.machine_has_engine_installed?
