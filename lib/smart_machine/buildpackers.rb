@@ -45,7 +45,7 @@ module SmartMachine
 					--build-arg SMARTMACHINE_VERSION=#{SmartMachine.version} \
 					--build-arg USER_UID=`id -u` \
 					--build-arg USER_NAME=`id -un` \
-					#{SmartMachine.config.root_path}/lib/smart_machine/engine/buildpacks/rails", out: File::NULL)
+					#{SmartMachine.config.root_path}/lib/smart_machine/buildpackers/rails", out: File::NULL)
 					puts "done"
 				end
 			end
@@ -106,7 +106,7 @@ module SmartMachine
 		# end
 
 		def buildpacker_image_name
-			"smartmachine/buildpacks/rails:#{SmartMachine.version}"
+			"smartmachine/buildpackers/rails:#{SmartMachine.version}"
 		end
 	end
 end
