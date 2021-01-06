@@ -18,7 +18,7 @@ module SmartMachine
       elsif machine_has_macos?
         install_on_mac
       else
-        puts "Installation of docker is currently supported on Debian or MacOS. Please install docker by other means on this platform to continue."
+        raise "Installation of docker is currently supported on Debian or MacOS. Please install docker by other means on this platform to continue."
       end
 			puts "-----> Docker Installation Complete"
 		end
@@ -37,7 +37,7 @@ module SmartMachine
       elsif machine_has_macos?
         uninstall_on_mac
       else
-        puts "Uninstallation of docker is currently supported on Debian or MacOS. Please uninstall docker by other means on this platform to continue."
+        raise "Uninstallation of docker is currently supported on Debian or MacOS. Please uninstall docker by other means on this platform to continue."
       end
 			puts "-----> Docker Uninstallation Complete"
 		end
