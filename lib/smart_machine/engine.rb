@@ -10,7 +10,7 @@ module SmartMachine
 
 				# SmartMachine::Users.create_htpasswd_files
 
-				sync = SmartMachine::Sync.new
+				syncer = SmartMachine::Syncer.new
 
 				system("mkdir -p ./tmp/engine")
 				system("cp #{SmartMachine.config.gem_dir}/lib/smart_machine/engine/Dockerfile ./tmp/engine/Dockerfile")
@@ -18,7 +18,7 @@ module SmartMachine
 				gem_file_path = "#{SmartMachine.config.cache_dir}/smartmachine-#{SmartMachine.version}.gem"
 				system("cp #{gem_file_path} ./tmp/engine/smartmachine-#{SmartMachine.version}.gem")
 
-				# sync.run only: :push
+        syncer.sync only: :push
 
 				print "-----> Creating image for Engine ... "
 				docker_gid = machine_has_linuxos? ? "getent group docker | cut -d: -f3" : (machine_has_macos? ? "id -g" : "")
@@ -46,7 +46,7 @@ module SmartMachine
 				system("rm ./tmp/engine/Dockerfile")
 				system("rm ./tmp/engine/smartmachine-#{SmartMachine.version}.gem")
 
-				# sync.run
+        syncer.sync
 
 				puts "-----> SmartMachine Engine Installation Complete"
 			end

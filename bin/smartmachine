@@ -17,8 +17,8 @@ if ENV["INSIDE_ENGINE"] == "yes"
 			apps = SmartMachine::Apps.new
 			apps.run ARGV
     when "sync"
-      sync = SmartMachine::Sync.new
-      sync.run ARGV
+      syncer = SmartMachine::Syncer.new
+      syncer.sync ARGV
     else
       puts "Help: Specify a valid smartmachine command to execute inside the machine directory."
 		end
