@@ -41,6 +41,11 @@ module SmartMachine
 			puts "New machine #{name} has been created."
 		end
 
+    def initial_setup
+      getting_started
+      securing_your_server
+    end
+
 		def install
       SmartMachine::Docker.new.install
       SmartMachine::Engine.new.install
