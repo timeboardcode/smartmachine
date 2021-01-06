@@ -73,7 +73,7 @@ if SmartMachine.in_machine_dir?
 		if engine.machine_has_engine_installed?
       engine.run_commands_by_machine_mode(commands: "smartengine #{command} #{ARGV.join(' ')}")
     else
-      puts "Smartmachine engine has not been installed yet for this machine. Please run 'smartmachine install' before running other commands."
+      puts "Smartmachine engine has not been installed yet for this machine. Please run 'smartmachine docker install' and 'smartmachine engine install' before running other commands."
     end
 	end
 else
