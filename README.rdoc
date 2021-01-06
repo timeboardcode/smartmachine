@@ -50,11 +50,11 @@ If using SmartMachine on a server, perform the below steps before proceeding.
 3. Install docker from the command prompt, and add UFW rules for Docker if specified at the end of installation. For Mac OSX ensure that 
 'Use gRPC FUSE for file sharing' is turned off in experimental features of docker preferences:
 
-    $ smartmachine install docker
+    $ smartmachine docker install
 
 4. Install engine from the command prompt:
 
-    $ smartmachine install engine
+    $ smartmachine engine install
 
 5. Install buildpackers from the command prompt:
 
