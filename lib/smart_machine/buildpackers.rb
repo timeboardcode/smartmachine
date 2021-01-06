@@ -1,7 +1,7 @@
 require 'open3'
 
 module SmartMachine
-	class Buildpacker < SmartMachine::Base
+	class Buildpackers < SmartMachine::Base
 		def initialize
 		end
 
