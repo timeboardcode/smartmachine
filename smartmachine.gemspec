@@ -39,5 +39,5 @@ Gem::Specification.new do |s|
 	s.add_dependency "net-ssh", "~> 5.2"
 	s.add_dependency "bcrypt", "~> 3.1", ">= 3.1.13"
 	s.add_dependency "activesupport", "~> 6.0"
-	s.add_dependency "bundler", '>= 2.1.4'
+	s.add_dependency "bundler", '>= 2.1.4', "< 3.0.0"
 end
