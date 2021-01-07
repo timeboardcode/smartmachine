@@ -40,7 +40,7 @@ module SmartMachine
 			if SmartMachine.config.machine_mode == :server
 				exec "ssh -p #{SmartMachine.credentials.machine[:port]} #{SmartMachine.credentials.machine[:username]}@#{SmartMachine.credentials.machine[:address]}"
 			else
-				puts "Help: Cannot ssh into local machine. You can only use the ssh command when using smartmachine for a server."
+				puts "Cannot ssh into local machine. You can only use the ssh command when using smartmachine for a server."
 			end
 		end
 	end
