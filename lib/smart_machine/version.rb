@@ -7,7 +7,7 @@ module SmartMachine
   end
 
   def self.version
-    self.gem_version
+    self.gem_version.to_s
   end
 
   def self.ruby_version
