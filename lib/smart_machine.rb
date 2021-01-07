@@ -1,10 +1,14 @@
+require 'smart_machine/version'
+
 require "ostruct"
 require "yaml"
 require "os"
 
 # The main SmartMachine driver
 module SmartMachine
-	def self.config
+	class Error < StandardError; end
+
+  def self.config
 		@@config ||= OpenStruct.new
 	end
 
@@ -17,7 +21,7 @@ module SmartMachine
   end
 end
 
-require 'smart_machine/version'
+
 
 SmartMachine.config.gem_dir = Gem::Specification.find_by_name("smartmachine").gem_dir
 SmartMachine.config.cache_dir = Gem::Specification.find_by_name("smartmachine").cache_dir
