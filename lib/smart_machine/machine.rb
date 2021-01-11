@@ -14,7 +14,8 @@ module SmartMachine
 		#
 		# Arguments:
 		#   name: (String)
-		def create(name)
+		#   dev: (Boolean)
+		def create(name:, dev:)
 			raise "Please specify a machine name" if name.blank?
 
 			pathname = File.expand_path "./#{name}"
@@ -32,10 +33,15 @@ module SmartMachine
 
 				File.write("Gemfile", File.open("Gemfile",&:read).gsub("replace_ruby_version", "#{SmartMachine.ruby_version}"))
 				File.write(".ruby-version", SmartMachine.ruby_version)
-				File.write("Gemfile", File.open("Gemfile",&:read).gsub("replace_smartmachine_version", "#{SmartMachine.version}"))
+				if dev
+          File.write("Gemfile", File.open("Gemfile",&:read).gsub("\"~> replace_smartmachine_version\"", "path: \"../\""))
+        else
+          File.write("Gemfile", File.open("Gemfile",&:read).gsub("replace_smartmachine_version", "#{SmartMachine.version}"))
+        end
 				system("mv gitignore-template .gitignore")
 
-				system("bundle install && git init && git add . && git commit -m 'initial commit'")
+        # Here BUNDLE_GEMFILE is needed as it may be already set due to usage of bundle exec (which may not be correct in this case)
+        system("BUNDLE_GEMFILE='#{pathname}/Gemfile' bundle install && git init && git add . && git commit -m 'initial commit'")
 			end
 
 			puts "New machine #{name} has been created."
