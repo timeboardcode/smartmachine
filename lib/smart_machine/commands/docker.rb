@@ -19,7 +19,7 @@ module SmartMachine
         end
       end
       
-      desc "docker COMMAND", "Run docker commands on the machine"
+      desc "docker [COMMAND]", "Run docker commands on the machine"
       def docker(*commands)
           inside_machine_dir do
             docker = SmartMachine::Docker.new
